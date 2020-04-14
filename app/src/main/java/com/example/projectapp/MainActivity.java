@@ -95,9 +95,8 @@ public class MainActivity extends AppCompatActivity {
                     String type = response.body().getType();
                     String source = response.body().getSource();
                     Integer episodes = response.body().getEpisodes();
-                    Integer score = response.body().getScore();
+                    String score = response.body().getScore();
                     List<Genres> genres = response.body().getGenres();
-                    List<Opening> opening_themes = response.body().getOpening_themes();
                     Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
                 }else{
                     showError();

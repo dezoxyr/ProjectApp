@@ -8,6 +8,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +50,23 @@ public class MainActivity extends AppCompatActivity {
                 .create();
 
         sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
-        makeApiCall();
+        List<Genres> genresList = getDataFromCache();
+        if(genresList != null){
+            showList(genresList);
+        }else {
+            makeApiCall();
+        }
 
+    }
+
+    private List<Genres> getDataFromCache() {
+        String jsonGenres = sharedPreferences.getString("cle_string", null);
+        if(jsonGenres == null){
+            return null;
+        }else {
+            Type listType = new TypeToken<List<Genres>>() {}.getType();
+            return gson.fromJson(jsonGenres, listType);
+        }
     }
 
     private void showList(final List<Genres> genresList){
@@ -123,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         String jsonString = gson.toJson(genresList);
         sharedPreferences
                 .edit()
-                .putInt("cle_integer", 3)
                 .putString("cle_string", jsonString)
                 .apply();
         Toast.makeText(getApplicationContext(),"List saved",Toast.LENGTH_SHORT).show();

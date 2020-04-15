@@ -1,5 +1,7 @@
 package com.example.projectapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,13 +35,19 @@ public class MainActivity extends AppCompatActivity {
     private listAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private static final String BASE_URL = "https://api.jikan.moe/";
+    private SharedPreferences sharedPreferences;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        gson = new GsonBuilder()
+                .setLenient()
+                .create();
 
+        sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
         makeApiCall();
 
     }
@@ -73,9 +81,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeApiCall(){
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -99,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     String score = response.body().getScore();
                     List<Genres> genres = response.body().getGenres();
                     Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
+                    saveList(genres);
                     showList(genres);
                 }else{
                     showError();
@@ -111,6 +117,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void saveList(List<Genres> genresList){
+        String jsonString = gson.toJson(genresList);
+        sharedPreferences
+                .edit()
+                .putInt("cle_integer", 3)
+                .putString("cle_string", jsonString)
+                .apply();
+        Toast.makeText(getApplicationContext(),"List saved",Toast.LENGTH_SHORT).show();
     }
 
     private void showError(){

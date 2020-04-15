@@ -39,16 +39,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        makeApiCall();
+
+    }
+
+    private void showList(final List<Genres> genresList){
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        final List<String> input = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            input.add("Test" + i);
-        }// define an adapter
-        mAdapter = new listAdapter(input);
+
+        // define an adapter
+        mAdapter = new listAdapter(genresList);
         recyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
@@ -60,16 +64,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                        input.remove(viewHolder.getAdapterPosition());
+                        genresList.remove(viewHolder.getAdapterPosition());
                         mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                     }
                 };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        makeApiCall();
-
     }
-
 
     private void makeApiCall(){
         Gson gson = new GsonBuilder()
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     String score = response.body().getScore();
                     List<Genres> genres = response.body().getGenres();
                     Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
+                    showList(genres);
                 }else{
                     showError();
                 }

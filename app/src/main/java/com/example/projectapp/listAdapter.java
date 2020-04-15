@@ -12,7 +12,7 @@ import com.example.projectapp.R;
 import java.util.List;
 
 public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
-    private List<String> values;
+    private List<Genres> values;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -31,7 +31,7 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
         }
     }
 
-    public void add(int position, String item) {
+    public void add(int position, Genres item) {
         values.add(position, item);
         notifyItemInserted(position);
     }
@@ -42,7 +42,7 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public listAdapter(List<String> myDataset) {
+    public listAdapter(List<Genres> myDataset) {
         values = myDataset;
     }
 
@@ -62,8 +62,8 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        final String name = values.get(position);
-        holder.txtHeader.setText(name);
+        final Genres genre = values.get(position);
+        holder.txtHeader.setText(genre.getName());
         holder.txtHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +71,7 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
             }
         });
 
-        holder.txtFooter.setText("Footer: " + name);
+        holder.txtFooter.setText("Footer: " + genre.getUrl());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

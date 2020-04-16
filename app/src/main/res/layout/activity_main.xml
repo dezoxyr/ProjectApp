@@ -15,15 +15,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="25dp"/>
+     <RelativeLayout
+         android:id="@+id/data"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:paddingTop="10dp">
     <ImageView
         android:id="@+id/icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"/>
+    <TextView
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/icon"
+        android:paddingLeft="20dp"
+        android:text="Type : "
+        android:textSize="20dp"/>
+    <TextView
+         android:id="@+id/ep"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_toRightOf="@+id/icon"
+         android:layout_below="@id/type"
+         android:paddingTop="5dp"
+         android:paddingLeft="20dp"
+         android:text="Episodes : "
+         android:textSize="20dp"/>
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/icon"
+        android:layout_below="@id/ep"
+        android:paddingTop="5dp"
+        android:paddingLeft="20dp"
+        android:text="Score : "
+        android:textSize="20dp"/>
 
+     </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"/>
     </LinearLayout>
 
 

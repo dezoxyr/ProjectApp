@@ -47,7 +47,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String BASE_URL = "https://api.jikan.moe/";
     private SharedPreferences sharedPreferences;
     private Gson gson;
-    private TextView recup;
+    private TextView titre;
+    private TextView typ;
+    private TextView ep;
+    private TextView sco;
     private ImageView img;
 
     @Override
@@ -59,23 +62,36 @@ public class MainActivity extends AppCompatActivity {
                 .setLenient()
                 .create();
 
-        recup = (TextView) findViewById(R.id.title);
+        titre = (TextView) findViewById(R.id.title);
+        typ = (TextView) findViewById(R.id.type);
+        ep = (TextView) findViewById(R.id.ep);
+        sco = (TextView) findViewById(R.id.score);
         img = (ImageView) findViewById(R.id.icon);
 
         sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
 
         List<Genres> genresList = getDataFromCache();
-        String s = sharedPreferences.getString("title",null);
-        String url = sharedPreferences.getString("url",null);
 
         if(genresList != null){
-            if(s != null) recup.setText(s);
-            if(url != null) Picasso.with(getApplicationContext()).load(url).into(img);
+            printData();
             showList(genresList);
         }else {
             makeApiCall();
         }
 
+    }
+
+    private void printData(){
+        String s = sharedPreferences.getString("title",null);
+        if(s != null) titre.setText(s);
+        String url = sharedPreferences.getString("url",null);
+        if(url != null) Picasso.with(getApplicationContext()).load(url).into(img);
+        String t = sharedPreferences.getString("type",null);
+        if(t != null) typ.append(t);
+        String e = sharedPreferences.getString("episodes",null);
+        if(e != null) ep.append(e);
+        String sc = sharedPreferences.getString("score",null);
+        if(sc != null) sco.append(sc);
     }
 
     private List<Genres> getDataFromCache() {
@@ -134,16 +150,18 @@ public class MainActivity extends AppCompatActivity {
                     String image_url = response.body().getImage_url();
                     String title = response.body().getTitle();
                     String type = response.body().getType();
-                    String source = response.body().getSource();
                     Integer episodes = response.body().getEpisodes();
                     String score = response.body().getScore();
                     List<Genres> genres = response.body().getGenres();
                     Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
 
-                    recup.setText(title);
+                    titre.setText(title);
+                    typ.append(type);
+                    ep.append(episodes.toString());
+                    sco.append(score);
                     Picasso.with(getApplicationContext()).load(image_url).into(img);
 
-                    saveList(genres,title,image_url);
+                    saveList(genres,title,image_url,type,episodes.toString(),score);
                     showList(genres);
                 }else{
                     showError();
@@ -158,10 +176,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void saveList(List<Genres> genresList,String title,String image_url){
+    private void saveList(List<Genres> genresList,String title,String image_url,String type,String episodes,String score){
         String jsonString = gson.toJson(genresList);
         sharedPreferences
                 .edit()
+                .putString("type", type)
+                .putString("episodes", episodes)
+                .putString("score", score)
                 .putString("url", image_url)
                 .putString("title", title)
                 .putString("cle_string", jsonString)

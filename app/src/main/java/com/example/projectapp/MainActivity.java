@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Type;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String BASE_URL = "https://api.jikan.moe/";
     private SharedPreferences sharedPreferences;
     private Gson gson;
+    private TextView recup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
         gson = new GsonBuilder()
                 .setLenient()
                 .create();
-
+        recup = (TextView) findViewById(R.id.title);
         sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
         List<Genres> genresList = getDataFromCache();
+        String s = sharedPreferences.getString("title",null);
         if(genresList != null){
+            if(s != null) recup.setText(s);
             showList(genresList);
         }else {
             makeApiCall();
@@ -121,7 +125,8 @@ public class MainActivity extends AppCompatActivity {
                     String score = response.body().getScore();
                     List<Genres> genres = response.body().getGenres();
                     Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
-                    saveList(genres);
+                    recup.setText(title);
+                    saveList(genres,title);
                     showList(genres);
                 }else{
                     showError();
@@ -136,10 +141,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void saveList(List<Genres> genresList){
+    private void saveList(List<Genres> genresList,String title){
         String jsonString = gson.toJson(genresList);
         sharedPreferences
                 .edit()
+                .putString("title", title)
                 .putString("cle_string", jsonString)
                 .apply();
         Toast.makeText(getApplicationContext(),"List saved",Toast.LENGTH_SHORT).show();

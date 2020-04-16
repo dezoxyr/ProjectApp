@@ -2,6 +2,8 @@ package com.example.projectapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -9,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,9 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String BASE_URL = "https://api.jikan.moe/";
     private SharedPreferences sharedPreferences;
     private Gson gson;
+    private TextView titre;
+    private TextView typ;
+    private TextView ep;
+    private TextView sco;
+    private ImageView img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +62,36 @@ public class MainActivity extends AppCompatActivity {
                 .setLenient()
                 .create();
 
+        titre = (TextView) findViewById(R.id.title);
+        typ = (TextView) findViewById(R.id.type);
+        ep = (TextView) findViewById(R.id.ep);
+        sco = (TextView) findViewById(R.id.score);
+        img = (ImageView) findViewById(R.id.icon);
+
         sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
+
         List<Genres> genresList = getDataFromCache();
+
         if(genresList != null){
+            printData();
             showList(genresList);
         }else {
             makeApiCall();
         }
 
+    }
+
+    private void printData(){
+        String s = sharedPreferences.getString("title",null);
+        if(s != null) titre.setText(s);
+        String url = sharedPreferences.getString("url",null);
+        if(url != null) Picasso.with(getApplicationContext()).load(url).into(img);
+        String t = sharedPreferences.getString("type",null);
+        if(t != null) typ.append(t);
+        String e = sharedPreferences.getString("episodes",null);
+        if(e != null) ep.append(e);
+        String sc = sharedPreferences.getString("score",null);
+        if(sc != null) sco.append(sc);
     }
 
     private List<Genres> getDataFromCache() {
@@ -112,16 +147,21 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Restanimereponse> call, Response<Restanimereponse> response) {
                 if(response.isSuccessful()){
                     assert response.body() != null;
-                    String url = response.body().getUrl();
                     String image_url = response.body().getImage_url();
                     String title = response.body().getTitle();
                     String type = response.body().getType();
-                    String source = response.body().getSource();
                     Integer episodes = response.body().getEpisodes();
                     String score = response.body().getScore();
                     List<Genres> genres = response.body().getGenres();
                     Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
-                    saveList(genres);
+
+                    titre.setText(title);
+                    typ.append(type);
+                    ep.append(episodes.toString());
+                    sco.append(score);
+                    Picasso.with(getApplicationContext()).load(image_url).into(img);
+
+                    saveList(genres,title,image_url,type,episodes.toString(),score);
                     showList(genres);
                 }else{
                     showError();
@@ -136,10 +176,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void saveList(List<Genres> genresList){
+    private void saveList(List<Genres> genresList,String title,String image_url,String type,String episodes,String score){
         String jsonString = gson.toJson(genresList);
         sharedPreferences
                 .edit()
+                .putString("type", type)
+                .putString("episodes", episodes)
+                .putString("score", score)
+                .putString("url", image_url)
+                .putString("title", title)
                 .putString("cle_string", jsonString)
                 .apply();
         Toast.makeText(getApplicationContext(),"List saved",Toast.LENGTH_SHORT).show();

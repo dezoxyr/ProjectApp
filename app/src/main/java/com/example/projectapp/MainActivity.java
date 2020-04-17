@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +41,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView recyclerView;
     private listAdapter mAdapter;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView ep;
     private TextView sco;
     private ImageView img;
+    private EditText input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         img = (ImageView) findViewById(R.id.icon);
 
         sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
+        Button button = (Button)findViewById(R.id.search);
+        input = (EditText)findViewById(R.id.input);
+        button.setOnClickListener(this);
 
         List<Genres> genresList = getDataFromCache();
 
@@ -76,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             printData();
             showList(genresList);
         }else {
-            makeApiCall();
+            makeApiCall(32);
         }
 
     }
@@ -132,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    private void makeApiCall(){
+    private void makeApiCall(int id){
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -141,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         AnimeAPI animeAPI = retrofit.create(AnimeAPI.class);
 
-        Call<Restanimereponse> call = animeAPI.getanimeresponse();
+        Call<Restanimereponse> call = animeAPI.getanimeresponse(id);
         call.enqueue(new Callback<Restanimereponse>() {
             @Override
             public void onResponse(Call<Restanimereponse> call, Response<Restanimereponse> response) {
@@ -214,5 +220,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        String s = input.getText().toString();
+        Toast.makeText(this,"Searching",Toast.LENGTH_SHORT).show();
+        int id = Integer.valueOf(s);
+        makeApiCall(id);
     }
 }

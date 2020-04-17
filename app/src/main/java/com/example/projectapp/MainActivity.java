@@ -93,11 +93,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String url = sharedPreferences.getString("url",null);
         if(url != null) Picasso.with(getApplicationContext()).load(url).into(img);
         String t = sharedPreferences.getString("type",null);
-        if(t != null) typ.append(t);
+        if(t != null) typ.setText("Type : "+t);;
         String e = sharedPreferences.getString("episodes",null);
-        if(e != null) ep.append(e);
+        if(e != null) ep.setText("Episodes : "+e);
         String sc = sharedPreferences.getString("score",null);
-        if(sc != null) sco.append(sc);
+        if(sc != null) sco.setText("Score : "+sc);
     }
 
     private List<Genres> getDataFromCache() {
@@ -162,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
 
                     titre.setText(title);
-                    typ.append(type);
-                    ep.append(episodes.toString());
-                    sco.append(score);
+                    typ.setText("Type : "+type);
+                    ep.setText("Episodes : "+episodes.toString());
+                    sco.setText("Score : "+score);
                     Picasso.with(getApplicationContext()).load(image_url).into(img);
 
                     saveList(genres,title,image_url,type,episodes.toString(),score);

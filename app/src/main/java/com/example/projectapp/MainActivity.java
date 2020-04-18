@@ -1,6 +1,7 @@
 package com.example.projectapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,12 +23,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,7 +43,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView recyclerView;
     private listAdapter mAdapter;
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView ep;
     private TextView sco;
     private ImageView img;
+    private EditText input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         img = (ImageView) findViewById(R.id.icon);
 
         sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
+        Button button = (Button)findViewById(R.id.search);
+        input = (EditText)findViewById(R.id.input);
+        button.setOnClickListener(this);
 
         List<Genres> genresList = getDataFromCache();
 
@@ -76,22 +84,24 @@ public class MainActivity extends AppCompatActivity {
             printData();
             showList(genresList);
         }else {
-            makeApiCall();
+            makeApiCall(32);
         }
-
+        Intent intent = getIntent();
+        int id = intent.getIntExtra("ID",0);
+        makeApiCall(id);
     }
 
     private void printData(){
         String s = sharedPreferences.getString("title",null);
         if(s != null) titre.setText(s);
         String url = sharedPreferences.getString("url",null);
-        if(url != null) Picasso.with(getApplicationContext()).load(url).into(img);
+        if(url != null) Picasso.get().load(url).into(img);
         String t = sharedPreferences.getString("type",null);
-        if(t != null) typ.append(t);
+        if(t != null) typ.setText("Type : "+t);;
         String e = sharedPreferences.getString("episodes",null);
-        if(e != null) ep.append(e);
+        if(e != null) ep.setText("Episodes : "+e);
         String sc = sharedPreferences.getString("score",null);
-        if(sc != null) sco.append(sc);
+        if(sc != null) sco.setText("Score : "+sc);
     }
 
     private List<Genres> getDataFromCache() {
@@ -112,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         // define an adapter
-        mAdapter = new listAdapter(genresList);
+        mAdapter = new listAdapter(genresList,null);
         recyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
@@ -132,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    private void makeApiCall(){
+    private void makeApiCall(int id){
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -141,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         AnimeAPI animeAPI = retrofit.create(AnimeAPI.class);
 
-        Call<Restanimereponse> call = animeAPI.getanimeresponse();
+        Call<Restanimereponse> call = animeAPI.getanimeresponse(id);
         call.enqueue(new Callback<Restanimereponse>() {
             @Override
             public void onResponse(Call<Restanimereponse> call, Response<Restanimereponse> response) {
@@ -156,10 +166,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
 
                     titre.setText(title);
-                    typ.append(type);
-                    ep.append(episodes.toString());
-                    sco.append(score);
-                    Picasso.with(getApplicationContext()).load(image_url).into(img);
+                    typ.setText("Type : "+type);
+                    ep.setText("Episodes : "+episodes.toString());
+                    sco.setText("Score : "+score);
+                    Picasso.get().load(image_url).into(img);
 
                     saveList(genres,title,image_url,type,episodes.toString(),score);
                     showList(genres);
@@ -174,6 +184,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void callAPI(String name){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        AnimeAPI animeAPI = retrofit.create(AnimeAPI.class);
+
+        Call<AnimeList> call = animeAPI.getanimelist(name);
+        call.enqueue(new Callback<AnimeList>() {
+            @Override
+            public void onResponse(Call<AnimeList> call, Response<AnimeList> response) {
+                if(response.isSuccessful()){
+                    assert response.body() != null;
+                    List<Anime> anime = response.body().getResults();
+
+
+                    Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(),SecondActivity.class);
+                    intent.putExtra("anime", (Serializable) anime);
+                    startActivity(intent);
+
+                }else{
+                    showError();
+                }
+            }
+            @Override
+            public void onFailure(Call<AnimeList> call, Throwable t) {
+                showError();
+            }
+        });
     }
 
     private void saveList(List<Genres> genresList,String title,String image_url,String type,String episodes,String score){
@@ -214,5 +257,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        String s = input.getText().toString();
+        Toast.makeText(this,"Searching",Toast.LENGTH_SHORT).show();
+        /*int id = Integer.valueOf(s);
+        makeApiCall(id);*/
+        callAPI(s);
     }
 }

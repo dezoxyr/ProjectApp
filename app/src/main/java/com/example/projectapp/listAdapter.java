@@ -25,6 +25,7 @@ import java.util.List;
 public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     private List<Genres> values;
     private List<Anime> animevalues;
+    private String img_url = "https://www.pngfind.com/pngs/m/140-1404349_logo-manga-png-manga-entertainment-logo-transparent-png.png";
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -95,7 +96,9 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
                     remove(position);
                 }
             });
-            holder.txtFooter.setText("Footer: " + genre.getType());
+            holder.txtFooter.setText("Type : " + genre.getType());
+
+            Picasso.get().load(img_url).resize(180,180).into(holder.img);
 
         }else if(animevalues != null){
             final Anime anime = animevalues.get(position);
@@ -108,7 +111,7 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
             });
             holder.txtFooter.setText("Type : " + anime.getType());
 
-            Picasso.get().load(anime.getImage_url()).resize(160,160).into(holder.img);
+            Picasso.get().load(anime.getImage_url()).resize(180,180).into(holder.img);
         }
     }
 

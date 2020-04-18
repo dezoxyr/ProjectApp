@@ -1,6 +1,7 @@
 package com.example.projectapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
@@ -84,14 +86,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else {
             makeApiCall(32);
         }
-
+        Intent intent = getIntent();
+        int id = intent.getIntExtra("ID",0);
+        makeApiCall(id);
     }
 
     private void printData(){
         String s = sharedPreferences.getString("title",null);
         if(s != null) titre.setText(s);
         String url = sharedPreferences.getString("url",null);
-        if(url != null) Picasso.with(getApplicationContext()).load(url).into(img);
+        if(url != null) Picasso.get().load(url).into(img);
         String t = sharedPreferences.getString("type",null);
         if(t != null) typ.setText("Type : "+t);;
         String e = sharedPreferences.getString("episodes",null);
@@ -118,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(layoutManager);
 
         // define an adapter
-        mAdapter = new listAdapter(genresList);
+        mAdapter = new listAdapter(genresList,null);
         recyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
@@ -165,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     typ.setText("Type : "+type);
                     ep.setText("Episodes : "+episodes.toString());
                     sco.setText("Score : "+score);
-                    Picasso.with(getApplicationContext()).load(image_url).into(img);
+                    Picasso.get().load(image_url).into(img);
 
                     saveList(genres,title,image_url,type,episodes.toString(),score);
                     showList(genres);
@@ -180,6 +184,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+    }
+
+    private void callAPI(String name){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        AnimeAPI animeAPI = retrofit.create(AnimeAPI.class);
+
+        Call<AnimeList> call = animeAPI.getanimelist(name);
+        call.enqueue(new Callback<AnimeList>() {
+            @Override
+            public void onResponse(Call<AnimeList> call, Response<AnimeList> response) {
+                if(response.isSuccessful()){
+                    assert response.body() != null;
+                    List<Anime> anime = response.body().getResults();
+
+
+                    Toast.makeText(getApplicationContext(),"API Succes",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(),SecondActivity.class);
+                    intent.putExtra("anime", (Serializable) anime);
+                    startActivity(intent);
+
+                }else{
+                    showError();
+                }
+            }
+            @Override
+            public void onFailure(Call<AnimeList> call, Throwable t) {
+                showError();
+            }
+        });
     }
 
     private void saveList(List<Genres> genresList,String title,String image_url,String type,String episodes,String score){
@@ -226,7 +263,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         String s = input.getText().toString();
         Toast.makeText(this,"Searching",Toast.LENGTH_SHORT).show();
-        int id = Integer.valueOf(s);
-        makeApiCall(id);
+        /*int id = Integer.valueOf(s);
+        makeApiCall(id);*/
+        callAPI(s);
     }
 }

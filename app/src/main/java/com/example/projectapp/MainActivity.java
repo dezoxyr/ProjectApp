@@ -73,11 +73,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sco = (TextView) findViewById(R.id.score);
         img = (ImageView) findViewById(R.id.icon);
 
+        //Pour la mise en cache
         sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
+
+        //Variables pour la recherche d'un animé
         Button button = (Button)findViewById(R.id.search);
         input = (EditText)findViewById(R.id.input);
         button.setOnClickListener(this);
 
+        //recupere les data misent en cache
         List<Genres> genresList = getDataFromCache();
 
         if(genresList != null){
@@ -86,9 +90,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else {
             makeApiCall(32);
         }
+
         Intent intent = getIntent();
         int id = intent.getIntExtra("ID",0);
-        makeApiCall(id);
+        if(id != 0) {
+            makeApiCall(id);
+        }
     }
 
     private void printData(){
@@ -125,11 +132,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter = new listAdapter(genresList,null);
         recyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        /*ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                     @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder
-                            target) {
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                         return false;
                     }
                     @Override
@@ -139,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        itemTouchHelper.attachToRecyclerView(recyclerView);*/
     }
 
     private void makeApiCall(int id){

@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -246,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -258,6 +260,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            return true;
+        }
+        if (id == R.id.action_fav) {
+
+            return true;
+        }
+        if (id == R.id.action_addfav) {
+            sharedPreferences
+                    .edit()
+                    .putString(titre.getText()+"",titre.getText()+"")
+                    .apply();
             return true;
         }
 

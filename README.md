@@ -23,10 +23,14 @@ Il s'agit d'une application permettant à l'utilisateur de **retrouver l'anime q
 
 ## Fonctionnalités
 
-- Ecran qui affiche les détails d'un animé ainsi que la barre de recherche et les boutons de gestion des favoris
+- Ecran qui affiche les détails d'un animé ainsi que la barre de recherche et les boutons de gestion des favoris.
 
 ![Image d'acceuil](https://github.com/dezoxyr/ProjectApp/blob/master/img_readme/Ecran%20acceuil.PNG)
 
-- La barre de recherche afin de retrouver son animé
+- La barre de recherche afin de retrouver son animé.
 
-![image barre recherche]()
+![image barre recherche](https://github.com/dezoxyr/ProjectApp/blob/master/img_readme/Fonction%20recherche.PNG)
+
+- Affichage de la liste des résultats de la recherche, swipe un item pour le selectionner.
+
+![image resultat recherche]()

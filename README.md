@@ -33,4 +33,8 @@ Il s'agit d'une application permettant à l'utilisateur de **retrouver l'anime q
 
 - Affichage de la liste des résultats de la recherche, swipe un item pour le selectionner.
 
-![image resultat recherche]()
+![image resultat recherche](https://github.com/dezoxyr/ProjectApp/blob/master/img_readme/List%20result.PNG)
+
+- Ajout de favoris grace au bouton coeur puis récuperation des donnés d'un animé favoris depuis la liste des favoris.
+
+![image favoris]()

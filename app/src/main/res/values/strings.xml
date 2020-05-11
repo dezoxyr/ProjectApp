@@ -11,4 +11,6 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="favoris">Favoris</string>
     <string name="add_favorite">Add favorite</string>
+
+    <string name="selectfav">Select your favorite</string>
 </resources>

@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView sco;
     private ImageView img;
     private EditText input;
+    private int idAnime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +94,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         Intent intent = getIntent();
-        int id = intent.getIntExtra("ID",0);
-        if(id != 0) {
-            makeApiCall(id);
+         idAnime = intent.getIntExtra("ID",0);
+        if(idAnime != 0) {
+            makeApiCall(idAnime);
         }
     }
 
@@ -264,13 +265,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         }
         if (id == R.id.action_fav) {
-
+            Intent intent = new Intent(getApplicationContext(),ThirdActivity.class);
+            startActivity(intent);
             return true;
         }
         if (id == R.id.action_addfav) {
+            Toast.makeText(this,titre.getText()+" added to favorite",Toast.LENGTH_SHORT).show();
             sharedPreferences
                     .edit()
-                    .putString(titre.getText()+"",titre.getText()+"")
+                    .putString("fav "+titre.getText(),titre.getText()+"")
+                    .putInt(titre.getText()+" id" , idAnime)
                     .apply();
             return true;
         }

@@ -26,6 +26,9 @@
             android:name=".SecondActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity
+            android:name=".ThirdActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

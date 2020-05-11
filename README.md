@@ -10,7 +10,7 @@ Il s'agit d'une application permettant à l'utilisateur de retrouver l'anime qu'
 
 ## Consignes respectées
 
-Appels API rest.
+Appels API rest.\n
 3 Ecrans : 3 activités.
 Affichage d'une liste dans un recycler view.
 Gitflow.

@@ -37,4 +37,4 @@ Il s'agit d'une application permettant à l'utilisateur de **retrouver l'anime q
 
 - Ajout de favoris grace au bouton coeur puis récuperation des donnés d'un animé favoris depuis la liste des favoris.
 
-![image favoris](https://github.com/dezoxyr/ProjectApp/blob/master/img_readme/Favoris.PNG)
+![image ajout favoris](https://github.com/dezoxyr/ProjectApp/blob/master/img_readme/addfav.PNG)  ![image favoris](https://github.com/dezoxyr/ProjectApp/blob/master/img_readme/Favoris.PNG)

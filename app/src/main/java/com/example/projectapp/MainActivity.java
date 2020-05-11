@@ -57,11 +57,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView sco;
     private ImageView img;
     private EditText input;
+    private int idAnime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         gson = new GsonBuilder()
                 .setLenient()
@@ -73,11 +75,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sco = (TextView) findViewById(R.id.score);
         img = (ImageView) findViewById(R.id.icon);
 
+        //Pour la mise en cache
         sharedPreferences = getSharedPreferences("app_esiea", Context.MODE_PRIVATE);
+
+        //Variables pour la recherche d'un animé
         Button button = (Button)findViewById(R.id.search);
         input = (EditText)findViewById(R.id.input);
         button.setOnClickListener(this);
 
+        //recupere les data misent en cache
         List<Genres> genresList = getDataFromCache();
 
         if(genresList != null){
@@ -86,9 +92,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else {
             makeApiCall(32);
         }
+
         Intent intent = getIntent();
-        int id = intent.getIntExtra("ID",0);
-        makeApiCall(id);
+         idAnime = intent.getIntExtra("ID",0);
+        if(idAnime != 0) {
+            makeApiCall(idAnime);
+        }
     }
 
     private void printData(){
@@ -125,11 +134,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter = new listAdapter(genresList,null);
         recyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        /*ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                     @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder
-                            target) {
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                         return false;
                     }
                     @Override
@@ -139,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        itemTouchHelper.attachToRecyclerView(recyclerView);*/
     }
 
     private void makeApiCall(int id){
@@ -241,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -253,6 +261,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            return true;
+        }
+        if (id == R.id.action_fav) {
+            Intent intent = new Intent(getApplicationContext(),ThirdActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        if (id == R.id.action_addfav) {
+            Toast.makeText(this,titre.getText()+" added to favorite",Toast.LENGTH_SHORT).show();
+            sharedPreferences
+                    .edit()
+                    .putString("fav "+titre.getText(),titre.getText()+"")
+                    .putInt(titre.getText()+" id" , idAnime)
+                    .apply();
             return true;
         }
 

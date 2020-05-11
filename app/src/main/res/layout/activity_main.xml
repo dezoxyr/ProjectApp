@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text"
         android:hint="search"
@@ -23,16 +24,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.google.android.material.textfield.TextInputLayout>
-    <Button
-        android:id="@+id/search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="160dp"
-        android:text="Search"
-        android:textSize="15dp"/>
-    <TextView
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Search"
+                android:textSize="15dp" />
+        </RelativeLayout>
+        <TextView
         android:id="@+id/title"
         android:paddingTop="10dp"
+        android:paddingLeft="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="25dp"/>

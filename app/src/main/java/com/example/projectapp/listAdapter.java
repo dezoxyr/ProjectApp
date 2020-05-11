@@ -1,5 +1,6 @@
 package com.example.projectapp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import java.util.List;
 public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     private List<Genres> values;
     private List<Anime> animevalues;
+    private String img_url = "https://www.pngfind.com/pngs/m/140-1404349_logo-manga-png-manga-entertainment-logo-transparent-png.png";
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -55,8 +57,12 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     }
 
     public void remove(int position) {
-        values.remove(position);
-        animevalues.remove(position);
+        if(values != null) {
+            values.remove(position);
+        }
+        if(animevalues != null) {
+            animevalues.remove(position);
+        }
         notifyItemRemoved(position);
     }
 
@@ -83,32 +89,28 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         if(values != null) {
             final Genres genre = values.get(position);
             holder.txtHeader.setText(genre.getName());
-            holder.txtHeader.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    remove(position);
-                }
-            });
-            holder.txtFooter.setText("Footer: " + genre.getType());
+            holder.txtFooter.setText("Type : " + genre.getType());
+
+            Picasso.get().load(img_url).resize(170,180).into(holder.img);
 
         }else if(animevalues != null){
             final Anime anime = animevalues.get(position);
             holder.txtHeader.setText(anime.getTitle());
-            holder.txtHeader.setOnClickListener(new View.OnClickListener() {
+            /*holder.txtHeader.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    remove(position);
+
                 }
-            });
+            });*/
             holder.txtFooter.setText("Type : " + anime.getType());
 
-            Picasso.get().load(anime.getImage_url()).resize(160,160).into(holder.img);
+            Picasso.get().load(anime.getImage_url()).resize(150,180).into(holder.img);
         }
     }
 

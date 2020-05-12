@@ -36,6 +36,8 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -270,12 +272,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         }
         if (id == R.id.action_addfav) {
-            Toast.makeText(this,titre.getText()+" added to favorite",Toast.LENGTH_SHORT).show();
-            sharedPreferences
-                    .edit()
-                    .putString("fav "+titre.getText(),titre.getText()+"")
-                    .putInt(titre.getText()+" id" , idAnime)
-                    .apply();
+
+            int i = 0;
+            Map<String, ?> map = sharedPreferences.getAll();
+            for(Map.Entry mEntry : map.entrySet()){
+                if(Pattern.matches("fav "+titre.getText(), mEntry.getKey()+"")){
+                    Toast.makeText(this,titre.getText()+" removed from favorite",Toast.LENGTH_SHORT).show();
+                    sharedPreferences
+                            .edit()
+                            .remove(mEntry.getKey()+"")
+                            .remove(titre.getText()+" id")
+                            .apply();
+                    i=1;
+                }
+            }
+
+            if(i==0) {
+                Toast.makeText(this, titre.getText() + " added to favorite", Toast.LENGTH_SHORT).show();
+                sharedPreferences
+                        .edit()
+                        .putString("fav " + titre.getText(), titre.getText() + "")
+                        .putInt(titre.getText() + " id", idAnime)
+                        .apply();
+            }
+            i=0;
             return true;
         }
 

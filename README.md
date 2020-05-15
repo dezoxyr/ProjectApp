@@ -20,6 +20,7 @@ Il s'agit d'une application permettant à l'utilisateur de **retrouver l'anime q
   - détails d'un anime
   - Possibilité d'ajouter des animes en favoris
   - Consultation des favoris grace a un spinner
+  - icon personnalisée 
   
 
 ## Fonctionnalités
@@ -39,3 +40,7 @@ Il s'agit d'une application permettant à l'utilisateur de **retrouver l'anime q
 - Ajout de favoris grace au bouton coeur puis récuperation des donnés d'un animé favoris depuis la liste des favoris.
 
 ![image ajout favoris](https://github.com/dezoxyr/ProjectApp/blob/master/img_readme/addfav.PNG)  ![image favoris](https://github.com/dezoxyr/ProjectApp/blob/master/img_readme/Favoris.PNG)
+
+- Une icon et un nom personnalisée pour cette application
+
+![image ecran acceuil]()
